@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>register</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <script src="/js/change.js"></script>
+</head>
+<body>
+<div class="control">
+    <div class="item">
+        <div class="active">注册</div>
+    </div>
+    <div class="content">
+        <div style="display: block;">
+            <form action="/user/register" method="post">
+                <p>用户名</p>
+                <input type="text" placeholder="请输入用户名" name="username" />
+                <p>密码</p>
+                <input type="password" placeholder="请输入密码" name ="password"/>
+                <br/>
+                <input type="submit" value="注册"/>
+            </form>
+            <p>已注册，<a href="/user/login.html" target="top">去登录</a></p>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

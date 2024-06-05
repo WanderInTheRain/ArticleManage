@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <link href="/css/style.css"  type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="control">
+    <div class="item">
+        <div class="active">登录</div>
+    </div>
+    <div class="content">
+        <div style="display: block;">
+            <form action="/user/login" method="post">
+                <p>账号</p>
+                <input type="text" placeholder="请输入用户名" name="username"/>
+                <p>密码</p>
+                <input type="password" placeholder="请输入密码"  name="password"/>
+                <br/>
+                <input type="submit" value="登录"/>
+            </form>
+            <p>没有账号，<a href="/user/register.html" target="top">去注册</a></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
