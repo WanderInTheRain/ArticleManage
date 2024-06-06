@@ -62,7 +62,11 @@ public class UserMapper {
     }
 
     public void insertUser(User user) {
-        String sql = "INSERT INTO user (id, name, password, authority) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO user (id, name, password, authority) " +
+                "VALUES (?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE " +
+                "name = VALUES(name), password = VALUES(password), authority = VALUES(authority)";
         jdbcTemplate.update(sql, user.getId(), user.getUsername(), user.getPassword(), user.getAuthority());
     }
+
 }

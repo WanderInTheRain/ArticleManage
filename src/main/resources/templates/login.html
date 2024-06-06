@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>login</title>
+    <title>Login</title>
     <link href="/css/style.css"  type="text/css" rel="stylesheet">
 </head>
 <body>
@@ -12,7 +12,7 @@
     </div>
     <div class="content">
         <div style="display: block;">
-            <form action="/user/login" method="post">
+            <form th:action="@{/user/login}" method="post">
                 <p>账号</p>
                 <input type="text" placeholder="请输入用户名" name="username"/>
                 <p>密码</p>
@@ -20,20 +20,12 @@
                 <br/>
                 <input type="submit" value="登录"/>
             </form>
-            <p>没有账号，<a href="/user/register.html" target="top">去注册</a></p>
+            <p>没有账号，<a th:href="@{/user/registerweb}">去注册</a></p>
+            <p><span th:text="${logerr}"></span></p>
         </div>
     </div>
 </div>
-<p id="errMessage"></p>
 
-<script>
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
-
-    const errmsg = getQueryParam('errmsg');
-    document.getElementById('errMessage').innerText = errmsg;
 </script>
 </body>
 </html>

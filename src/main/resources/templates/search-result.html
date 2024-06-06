@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>查找结果</title>
+</head>
+<body>
+<h1>查找结果</h1>
+<p th:text="'欢迎, ' + ${username}"></p>
+
+<input type="hidden" th:name="userid" th:value="${userid}"/>
+<input type="hidden" th:name="username" th:value="${username}"/>
+
+<div th:each="article : ${articles}">
+  <div>
+    <span th:text="${article.title}"></span>
+
+    <form th:action="@{/article/edit}" method="post" style="display:inline;">
+      <input type="hidden" name="userid" th:value="${userid}"/>
+      <input type="hidden" name="username" th:value="${username}"/>
+      <input type="hidden" name="articleId" th:value="${article.id}"/>
+      <button type="submit">查看</button>
+    </form>
+
+    <form th:action="@{/article/comment}" method="post" style="display:inline;">
+      <input type="hidden" name="userid" th:value="${userid}"/>
+      <input type="hidden" name="username" th:value="${username}"/>
+      <input type="hidden" name="articleId" th:value="${article.id}"/>
+      <button type="submit">评论</button>
+    </form>
+  </div>
+</div>
+
+
+
+</body>
+</html>

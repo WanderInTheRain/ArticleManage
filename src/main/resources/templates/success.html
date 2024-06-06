@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Success Page</title>
+</head>
+<body>
+<h1>文章管理</h1>
+<p th:text="'欢迎, ' + ${username}"></p>
+<form id="createForm" action="/article/inedit" method="post">
+    <input type="hidden" name="userid" th:value="${userid}"/>
+    <input type="hidden" name="username" th:value="${username}"/>
+    <button type="submit">创建文章</button>
+</form>
+
+<form id="searchForm" action="/article/searchpage" method="post">
+    <input type="hidden" name="userid" th:value="${userid}"/>
+    <input type="hidden" name="username" th:value="${username}"/>
+    <button type="submit">查找文章</button>
+</form>
+
+<form id="editForm" action="/user/edit" method="post">
+    <input type="hidden" name="userid" th:value="${userid}"/>
+    <input type="hidden" name="username" th:value="${username}"/>
+    <button type="submit">修改信息</button>
+</form>
+<form id="shareForm" action="/article/share" method="post">
+    <input type="hidden" name="userid" th:value="${userid}"/>
+    <input type="hidden" name="username" th:value="${username}"/>
+    <button type="submit">公共文章</button>
+</form>
+</body>
+</html>
