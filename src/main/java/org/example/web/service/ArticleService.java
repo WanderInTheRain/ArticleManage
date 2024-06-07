@@ -2,6 +2,7 @@ package org.example.web.service;
 
 import org.example.web.entity.Article;
 import org.example.web.entity.Comment;
+import org.example.web.entity.Category;
 import org.example.web.mapper.ArticleMapper;
 import org.example.web.mapper.CategoryMapper;
 import org.example.web.mapper.CommentMapper;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +23,21 @@ public class ArticleService{
     @Autowired
     private CommentMapper contentMapper;
 
+    public Long createCategory(String categoryName,Long parentId) {
+        Category category = new Category();
+        Long categoryid =  categoryMapper.getFirstNonExistingId();
+        category.setCategoryid(categoryid);
+        category.setName(categoryName);
+        category.setParentid(parentId); // Set default parent ID, change if needed
+        categoryMapper.insertCategory(category);
+        return category.getCategoryid();
+    }
+
+    public Long findCategoryIdByName(String categoryName) {
+        List<String> names = Arrays.asList(categoryName.split("-"));
+        return categoryMapper.getCategoryIdByNames(names);
+    }
+
     public List<Article> findBy(String method, String content, Model model) {
         if (method.equals("category")) {
             Long userid = (Long) model.getAttribute("userid");
@@ -32,16 +49,46 @@ public class ArticleService{
         else if (method.equals("id")) {
             Long userid = (Long) model.getAttribute("userid");
             Long articleId = Long.parseLong(content);
-            return articleMapper.findById(articleId,userid);
+            return articleMapper.findByIdAndAuthorId(articleId,userid);
+        }
+        else if (method.equals("idshare")) {
+            Long articleId = Long.parseLong(content);
+            return articleMapper.findById(articleId);
         }
         else if (method.equals("share")) {
             return articleMapper.findByShare();
         }
         else if (method.equals("title")) {
             Long userid = (Long) model.getAttribute("userid");
-            return articleMapper.findByTitle(content,userid);
+            return articleMapper.findByTitleAndAuthorId(content,userid);
         }
-        return articleMapper.findBy(method, content, model);
+        else if (method.equals("all")) {
+            Long userid = (Long) model.getAttribute("userid");
+            return articleMapper.findByAuthorId(userid);
+        }
+        else if (method.equals("content")) {
+            Long userid = (Long) model.getAttribute("userid");
+            List<Article> articles = articleMapper.findByAuthorId(userid);
+            List<Article> newarticles = new ArrayList<>();
+            for (Article article : articles) {
+                if (article.getContent().contains(content)) {
+                    newarticles.add(article);
+                }
+            }
+            return newarticles;
+        }
+        else if (method.equals("key")) {
+            Long userid = (Long) model.getAttribute("userid");
+            List<Article> articles = articleMapper.findByAuthorId(userid);
+            List<Article> newarticles = new ArrayList<>();
+            for (Article article : articles) {
+                if (article.getKey().contains(content)) {
+                    newarticles.add(article);
+                }
+            }
+            return newarticles;
+        }
+        return articleMapper.findByIdAndAuthorId(0L,0L);
     }
 
     public Long getFirstNonExistingId() {

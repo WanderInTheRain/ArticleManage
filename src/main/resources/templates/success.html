@@ -2,10 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Success Page</title>
+    <title>Home Page</title>
 </head>
 <body>
-<h1>文章管理</h1>
+<h1>Home</h1>
 <p th:text="'欢迎, ' + ${username}"></p>
 <form id="createForm" action="/article/inedit" method="post">
     <input type="hidden" name="userid" th:value="${userid}"/>
@@ -28,6 +28,9 @@
     <input type="hidden" name="userid" th:value="${userid}"/>
     <input type="hidden" name="username" th:value="${username}"/>
     <button type="submit">公共文章</button>
+</form>
+<form id="quitForm" action="/user/loginweb" method="get">
+    <button type="submit">退出登录</button>
 </form>
 </body>
 </html>

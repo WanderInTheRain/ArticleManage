@@ -1,5 +1,7 @@
 package org.example.web.mapper;
 
+import org.example.web.entity.Category;
+import org.example.web.entity.User;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -42,4 +44,20 @@ public class CategoryMapper {
             return null;
         }
     }
+
+    public long getFirstNonExistingId() {
+        String sql = "SELECT MIN(t1.categoryid) + 1 AS first_non_existing_id " +
+                "FROM category t1 " +
+                "LEFT JOIN category t2 ON t1.categoryid + 1 = t2.categoryid " +
+                "WHERE t2.categoryid IS NULL";
+        Long firstNonExistingId = jdbcTemplate.queryForObject(sql, Long.class);
+        return firstNonExistingId != null ? firstNonExistingId : 0L;
+    }
+
+    public void insertCategory(Category category) {
+        String sql = "INSERT INTO category (categoryid, name, parentid) " +
+                "VALUES (?, ?, ?) ;";
+        jdbcTemplate.update(sql, category.getCategoryid(),category.getName(), category.getParentid());
+    }
+
 }

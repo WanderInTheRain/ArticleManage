@@ -26,6 +26,12 @@
   </div>
 </form>
 
+<form id="homeForm" action="/article/home" method="post">
+  <input type="hidden" name="userid" th:value="${userid}"/>
+  <input type="hidden" name="username" th:value="${username}"/>
+  <button type="submit">返回主页</button>
+</form>
+
 <div>
   <h2>已有评论</h2>
   <ul>

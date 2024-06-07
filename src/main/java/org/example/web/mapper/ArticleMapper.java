@@ -1,14 +1,11 @@
 package org.example.web.mapper;
 
 import org.example.web.entity.Article;
-import org.example.web.entity.User;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
-import org.springframework.ui.Model;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +18,7 @@ public class ArticleMapper {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<Article> findById(Long id, Long authorid) {
+    public List<Article> findByIdAndAuthorId(Long id, Long authorid) {
         String sql = "SELECT * FROM article WHERE id = ? AND authorid = ?";
         try {
             return jdbcTemplate.query(sql, new Object[]{id, authorid}, (resultSet, i) -> {
@@ -31,6 +28,8 @@ public class ArticleMapper {
                 article.setTitle(resultSet.getString("title"));
                 article.setContent(resultSet.getString("content"));
                 article.setDate(resultSet.getTimestamp("date"));
+                article.setKey(resultSet.getString("key"));
+                article.setShare(resultSet.getLong("share"));
                 // 设置其他字段...
                 return article;
             });
@@ -50,6 +49,27 @@ public class ArticleMapper {
                 article.setTitle(resultSet.getString("title"));
                 article.setContent(resultSet.getString("content"));
                 article.setDate(resultSet.getTimestamp("date"));
+                article.setKey(resultSet.getString("key"));
+                article.setShare(resultSet.getLong("share"));
+                return article;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            // 处理未找到文章的情况
+            return Collections.emptyList();
+        }
+    }
+    public List<Article> findByAuthorId(Long authorid) {
+        String sql = "SELECT * FROM article WHERE authorid = ?";
+        try {
+            return jdbcTemplate.query(sql, new Object[]{authorid}, (resultSet, i) -> {
+                Article article = new Article();
+                article.setId(resultSet.getLong("id"));
+                article.setAuthorid(resultSet.getLong("authorid"));
+                article.setTitle(resultSet.getString("title"));
+                article.setContent(resultSet.getString("content"));
+                article.setDate(resultSet.getTimestamp("date"));
+                article.setKey(resultSet.getString("key"));
+                article.setShare(resultSet.getLong("share"));
                 return article;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -58,7 +78,7 @@ public class ArticleMapper {
         }
     }
 
-    public List<Article> findByTitle(String title, Long authorid) {
+    public List<Article> findByTitleAndAuthorId(String title, Long authorid) {
         String sql = "SELECT * FROM article WHERE title = ? AND authorid = ?";
         try {
             return jdbcTemplate.query(sql, new Object[]{title, authorid}, (resultSet, i) -> {
@@ -68,6 +88,8 @@ public class ArticleMapper {
                 article.setTitle(resultSet.getString("title"));
                 article.setContent(resultSet.getString("content"));
                 article.setDate(resultSet.getTimestamp("date"));
+                article.setKey(resultSet.getString("key"));
+                article.setShare(resultSet.getLong("share"));
                 return article;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -75,43 +97,17 @@ public class ArticleMapper {
             return Collections.emptyList();
         }
     }
-
-    public List<Article> findBy(String method, String content, Model model) {
-        Long userid = (Long) model.getAttribute("userid");
-        String sql;
-        String useridstr = String.valueOf(userid);
-        if (method.equals("id")) {
-            sql = "SELECT * FROM article.article WHERE id = " + content + " and authorid = " + useridstr;
-        }
-        else if (method.equals("share")) {
-            sql = "SELECT * FROM article.article WHERE share = " + content;
-        }
-        else{
-            sql = "SELECT * FROM article.article WHERE " + method + " = '" + content + "' and authorid = " + useridstr;
-        }
-        try {
-            return jdbcTemplate.query(sql, new Object[]{}, (resultSet, i) -> {
-                Article article = new Article();
-                article.setId(resultSet.getLong("id"));
-                article.setAuthorid(resultSet.getLong("authorid"));
-                article.setTitle(resultSet.getString("title"));
-                article.setContent(resultSet.getString("content"));
-                article.setDate(resultSet.getTimestamp("date"));
-                return article;
-            });
-        } catch (EmptyResultDataAccessException e) {
-            // 处理未找到文章的情况
-            return Collections.emptyList();
-        }
-    }
-
 
     public void insertArticle(Article article) {
-        String sql = "INSERT INTO article (id, authorid, title, content, date, `key`, categoryid) " +
-                "VALUES (?, ?, ?, ?, ?, ?, 1) ON DUPLICATE KEY UPDATE " +
+        String sql = "INSERT INTO article (id, authorid, title, content, date, `key`, categoryid, share) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE " +
                 "title = VALUES(title), content = VALUES(content), date = VALUES(date), " +
-                "`key` = VALUES(`key`), categoryid = VALUES(categoryid);";
-        jdbcTemplate.update(sql, article.getId(), article.getAuthorid(), article.getTitle(), article.getContent(), article.getDate(), "w");
+                "`key` = VALUES(`key`), categoryid = VALUES(categoryid), share = VALUES(share);";
+
+        jdbcTemplate.update(sql, article.getId(), article.getAuthorid(),
+                article.getTitle(), article.getContent(),
+                article.getDate(), article.getKey(),
+                article.getCategoryid(), article.getShare());
     }
 
     public long getFirstNonExistingId() {
@@ -136,7 +132,6 @@ public class ArticleMapper {
                 "FROM article a\n" +
                 "INNER JOIN CategoryTree ct ON a.categoryid = ct.categoryid\n" +
                 "WHERE a.authorid = ?;\n";
-
         try {
             return jdbcTemplate.query(sql, new Object[]{categoryId, userid}, (resultSet, i) -> {
                 Article article = new Article();
@@ -146,6 +141,8 @@ public class ArticleMapper {
                 article.setContent(resultSet.getString("content"));
                 article.setDate(resultSet.getTimestamp("date"));
                 article.setCategoryid(resultSet.getLong("categoryid"));
+                article.setKey(resultSet.getString("key"));
+                article.setShare(resultSet.getLong("share"));
                 return article;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -153,5 +150,24 @@ public class ArticleMapper {
             return Collections.emptyList();
         }
     }
-
+    public List<Article> findById(Long id) {
+        String sql = "SELECT * FROM article WHERE id = ?";
+        try {
+            return jdbcTemplate.query(sql, new Object[]{id}, (resultSet, i) -> {
+                Article article = new Article();
+                article.setId(resultSet.getLong("id"));
+                article.setAuthorid(resultSet.getLong("authorid"));
+                article.setTitle(resultSet.getString("title"));
+                article.setContent(resultSet.getString("content"));
+                article.setDate(resultSet.getTimestamp("date"));
+                article.setKey(resultSet.getString("key"));
+                article.setShare(resultSet.getLong("share"));
+                // 设置其他字段...
+                return article;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            // 处理未找到文章的情况
+            return null;
+        }
+    }
 }

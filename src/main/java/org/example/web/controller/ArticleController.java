@@ -6,6 +6,7 @@ import org.example.web.entity.User;
 import org.example.web.mapper.ArticleMapper;
 import org.example.web.mapper.UserMapper;
 import org.example.web.service.ArticleService;
+import org.example.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jackson.JsonMixinModule;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +27,16 @@ public class ArticleController {
     private ArticleService articleService;
     @Autowired
     private JsonMixinModule jsonMixinModule;
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/home")
+    public String home(@RequestParam("username") String username,
+                        @RequestParam("userid") Long userid,Model model) {
+            model.addAttribute("userid",userid);
+            model.addAttribute("username",username);
+            return "success";
+    }
 
     @PostMapping("/inedit")
     public String inEdit(Long userid, String username,Model model) {
@@ -38,10 +50,16 @@ public class ArticleController {
     }
 
     @PostMapping("/save")
-    public String saveArticle(Long authorid, Long id, String title, String content,String username,Model model) {
+    public String saveArticle(Long authorid, Long id, String title,
+                              String content,String username,
+                              String share, String category,
+                              String key, Model model) {
+        category = "all-" + category;
         // 调用ArticleService更新文章信息
+        boolean newArticle = false;
         if (id == null) {
             id = articleService.getFirstNonExistingId();
+            newArticle = true;
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -62,15 +80,72 @@ public class ArticleController {
         article.setContent(content);
         article.setAuthorid(authorid);
         article.setDate(date);
+        if (category == null) {
+            article.setCategoryid(0L);
+        }
+        else{
+            Long Categoryid = articleService.findCategoryIdByName(category);
+            if (Categoryid != null) {
+                article.setCategoryid(Categoryid);
+            }
+            else{
+                List<String> names = Arrays.asList(category.split("-"));
+                String tmp = new String();
+                int i;
+                for (i = 0; i < names.size(); i++) {
+                    if (i != 0){
+                        tmp = tmp + "-" + names.get(i);
+                    }
+                    else{
+                        tmp = tmp + names.get(i);
+                    }
+                    if (articleService.findCategoryIdByName(tmp) != null) {
+                        break;
+                    }
+                }
+                for (int j = i+1; j < names.size(); j++) {
+                    articleService.createCategory(names.get(j),articleService.findCategoryIdByName(tmp));
+                    tmp = tmp + "-"  + names.get(j);
+                }
+                Long categoryid = articleService.findCategoryIdByName(tmp);
+                article.setCategoryid(categoryid);
+            }
+        }
+        article.setKey(key);
+        if (share.equals("public")){
+            article.setShare(1L);
+        }
+        else{
+            article.setShare(0L);
+        }
 
-        articleService.insertArticle(article);
+        User user = userService.findByUsername(username);
+
+        if (newArticle) {
+            if (user.getAuthority() >= 1) {
+                articleService.insertArticle(article);
+                model.addAttribute("editmsg", "修改成功");
+            } else {
+                model.addAttribute("editmsg", "权限不足");
+            }
+        }
+        else{
+            List<Article> oldarticles = articleService.findBy("idshare",id.toString(),model);
+            Article oldarticle = oldarticles.get(0);
+            if (oldarticle.getAuthorid() == authorid){
+                articleService.insertArticle(article);
+                model.addAttribute("editmsg", "修改成功");
+            }
+            else{
+                model.addAttribute("editmsg", "不是作者");
+            }
+        }
 
         model.addAttribute("article", article);
         model.addAttribute("userid", authorid);
         model.addAttribute("username", username);
-
-        model.addAttribute("editmsg", "修改成功");
         return "edit";
+
     }
 
 
@@ -108,7 +183,7 @@ public class ArticleController {
         // 例如，根据 articleId 从数据库加载文章内容
         model.addAttribute("userid", userid);
         model.addAttribute("username", username);
-        List<Article> articles = articleService.findBy("id",articleId.toString(),model);
+        List<Article> articles = articleService.findBy("idshare",articleId.toString(),model);
 
         // 将文章内容和用户信息传递到编辑页面
         model.addAttribute("article", articles.get(0));
@@ -124,7 +199,7 @@ public class ArticleController {
         model.addAttribute("userid", userid);
         model.addAttribute("username", username);
         // 重新加载文章和评论信息
-        List<Article> articles = articleService.findBy("id", articleId.toString(),model);
+        List<Article> articles = articleService.findBy("idshare", articleId.toString(),model);
         Article article = articles.get(0);
         List<Comment> comments = articleService.findCommentByArticleId(articleId);
 
@@ -147,7 +222,7 @@ public class ArticleController {
 
         articleService.insertComment(content,articleId);
 
-        List<Article> articles = articleService.findBy("id", articleId.toString(),model);
+        List<Article> articles = articleService.findBy("idshare", articleId.toString(),model);
         Article article = articles.get(0);
         List<Comment> comments = articleService.findCommentByArticleId(articleId);
 
