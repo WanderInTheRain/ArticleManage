@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class ArticleMapper {
 
-    private final JdbcTemplate jdbcTemplate;
+    private static JdbcTemplate jdbcTemplate;
 
     public ArticleMapper(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -169,5 +169,9 @@ public class ArticleMapper {
             // 处理未找到文章的情况
             return null;
         }
+    }
+    public void deleteByIdAndAuthorId(Long articleId, Long authorId) {
+        String sql = "DELETE FROM article.article WHERE id = ? AND authorid = ?";
+        jdbcTemplate.update(sql, articleId, authorId);
     }
 }

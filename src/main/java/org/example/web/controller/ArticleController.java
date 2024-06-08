@@ -130,14 +130,18 @@ public class ArticleController {
             }
         }
         else{
-            List<Article> oldarticles = articleService.findBy("idshare",id.toString(),model);
-            Article oldarticle = oldarticles.get(0);
-            if (oldarticle.getAuthorid() == authorid){
-                articleService.insertArticle(article);
-                model.addAttribute("editmsg", "修改成功");
+            if (user.getAuthority() >= 1) {
+                List<Article> oldarticles = articleService.findBy("idshare", id.toString(), model);
+                Article oldarticle = oldarticles.get(0);
+                if (oldarticle.getAuthorid() == authorid) {
+                    articleService.insertArticle(article);
+                    model.addAttribute("editmsg", "修改成功");
+                } else {
+                    model.addAttribute("editmsg", "不是作者");
+                }
             }
             else{
-                model.addAttribute("editmsg", "不是作者");
+                model.addAttribute("editmsg", "权限不足");
             }
         }
 
@@ -189,6 +193,37 @@ public class ArticleController {
         model.addAttribute("article", articles.get(0));
         model.addAttribute("editmsg", "");
         return "edit"; // 返回编辑页面的模板名称
+    }
+    @PostMapping("delete")
+    public String deleteArticle(@RequestParam("articleId") Long articleId,
+                                @RequestParam("userid") Long userid,
+                                @RequestParam("username") String username,
+                                Model model) {
+        model.addAttribute("userid", userid);
+        model.addAttribute("username", username);
+        if (articleId == -1L){
+            model.addAttribute("article", new Article());
+            model.addAttribute("editmsg", "文章不存在");
+            return "edit"; // 返回编辑页面的模板名称
+        }
+        else{
+            List<Article> articles =  articleService.findBy("id", articleId.toString(),model);
+
+            if (!articles.isEmpty()){
+                // 执行删除操作
+                articleService.deleteArticleByUseridAndId(userid,articleId);
+
+                model.addAttribute("article", new Article());
+                model.addAttribute("editmsg", "文章已成功删除");
+
+                return "edit"; // 重定向到主页
+            }
+            else{
+                model.addAttribute("article", new Article());
+                model.addAttribute("editmsg", "非文章作者");
+                return "edit"; // 返回编辑页面的模板名称
+            }
+        }
     }
 
     @PostMapping("/comment")

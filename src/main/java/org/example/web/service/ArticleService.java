@@ -111,4 +111,8 @@ public class ArticleService{
         comment.setComentid(commentId);
         contentMapper.saveOrUpdate(comment);
     }
+
+    public void deleteArticleByUseridAndId(Long userid, Long articleId) {
+        articleMapper.deleteByIdAndAuthorId(articleId,userid);
+    }
 }

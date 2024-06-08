@@ -36,9 +36,16 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public String save(String username,Long userid, String password,  Model model) {
+    public String save(String username,Long userid, String password,String permissions,  Model model) {
         // 这里可以加入验证逻辑，比如检查用户名
-        userService.insertUser(new User(userid,username,password,1));
+        Integer permit;
+        if (permissions.equals("readonly")) {
+            permit = 0;
+        }
+        else{
+            permit = 1;
+        }
+        userService.insertUser(new User(userid,username,password,permit));
         model.addAttribute("userid",userid);
         model.addAttribute("username",username);
         model.addAttribute("usereditmsg","修改成功");
