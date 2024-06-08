@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>文章</title>
+    <link th:href="@{/edit.css}" rel="stylesheet" type="text/css">
 </head>
 <body>
 <h1>文章</h1>
@@ -18,11 +19,11 @@
     </div>
     <div>
         <label for="category">分类:</label>
-        <input type="text" id="category" name="category" placeholder="输入分类"/>
+        <input type="text" id="category" name="category" placeholder="输入分类，示例：“动物-猫类”"/>
     </div>
     <div>
-        <label for="key">标题:</label>
-        <input type="text" id="key" name="key" placeholder="输入关键字"/>
+        <label for="key">关键字:</label>
+        <input type="text" id="key" name="key" placeholder="输入关键字，示例：“动物，猫类”"/>
     </div>
     <div>
         <label for="visibility">是否公开:</label>

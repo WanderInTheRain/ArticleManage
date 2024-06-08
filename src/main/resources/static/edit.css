@@ -1,0 +1,77 @@
+/* Reset default margin and padding */
+body, h1, p, form, div, label, input, textarea, select, button {
+    margin: 0;
+    padding: 0;
+}
+
+/* Center the content and set basic styles */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+}
+
+/* Style the header */
+h1 {
+    margin-bottom: 20px;
+}
+
+/* Style the welcome message */
+p {
+    margin-bottom: 30px;
+}
+
+/* Style the form container */
+form {
+    margin-bottom: 20px;
+}
+
+/* Style the form divs */
+form div {
+    margin-bottom: 15px;
+    text-align: left;
+    display: inline-block;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Style the labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Style the input fields */
+input[type="text"], textarea, select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+/* Style the textarea */
+textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+/* Style the buttons */
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Add hover effect to buttons */
+button:hover {
+    background-color: #45a049;
+}
+
+/* Style the message */
+form div p span {
+    color: red;
+}

@@ -1,0 +1,56 @@
+/* Reset default margin and padding */
+body, h1, h2, h3, h4, p, ul, li, form, input {
+    margin: 0;
+    padding: 0;
+}
+
+/* Center the login box */
+.control {
+    width: 300px;
+    margin: 100px auto;
+}
+
+/* Style the login box */
+.item {
+    background-color: #f0f0f0;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Style the active tab */
+.active {
+    font-weight: bold;
+}
+
+/* Style the form */
+form {
+    padding: 20px;
+}
+
+/* Style the form inputs */
+input[type="text"],
+input[type="password"],
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Style the submit button */
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* Style the link */
+a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+/* Style the error message */
+.error {
+    color: red;
+}

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>评论文章</title>
+  <link th:href="@{/comment.css}" rel="stylesheet" type="text/css">
 </head>
 <body>
 <h1>评论文章</h1>
@@ -36,7 +37,7 @@
   <h2>已有评论</h2>
   <ul>
     <li th:each="comment : ${comments}">
-      <p><strong></strong>: <span th:text="${comment.content}"></span></p>
+      <p><strong></strong>> <span th:text="${comment.content}"></span></p>
     </li>
   </ul>
 </div>
