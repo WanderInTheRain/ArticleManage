@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户信息</title>
+    <link th:href="@{/useredit.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1>用户信息</h1>
+<p th:text="'欢迎, ' + ${username}"></p>
+
+<form th:action="@{/user/save}" method="post">
+    <input type="hidden" th:name="username" th:value="${username}"/>
+    <input type="hidden" th:name="userid" th:value="${userid}"/>
+    <div>
+        <label for="permissions">权限:</label>
+        <select id="permissions" name="permissions">
+            <option value="readonly">只读</option>
+            <option value="write">可写</option>
+        </select>
+    </div>
+    <div>
+        <label for="password">密码:</label>
+        <input type="text" id="password" name="password" placeholder="输入密码"/>
+    </div>
+    <div>
+        <button type="submit">保存</button>
+    </div>
+    <div>
+        <p><span th:text="${usereditmsg}"></span></p>
+    </div>
+</form>
+<form id="homeForm" action="/article/home" method="post">
+    <input type="hidden" name="userid" th:value="${userid}"/>
+    <input type="hidden" name="username" th:value="${username}"/>
+    <button type="submit">返回主页</button>
+</form>
+</body>
+</html>

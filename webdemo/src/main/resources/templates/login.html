@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link th:href="@{/login.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="control">
+    <div class="item">
+        <div class="active">登录</div>
+    </div>
+    <div class="content">
+        <div style="display: block;">
+            <form th:action="@{/user/login}" method="post">
+                <p>用户名</p>
+                <input type="text" placeholder="请输入用户名" name="username"/>
+                <p>密码</p>
+                <input type="password" placeholder="请输入密码"  name="password"/>
+                <br/>
+                <input type="submit" value="登录"/>
+            </form>
+            <p>没有账号，<a th:href="@{/user/registerweb}">去注册</a></p>
+            <p><span th:text="${logerr}"></span></p>
+        </div>
+    </div>
+</div>
+
+</script>
+</body>
+</html>

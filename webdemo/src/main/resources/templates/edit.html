@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文章</title>
+    <link th:href="@{/edit.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1>文章</h1>
+<p th:text="'欢迎, ' + ${username}"></p>
+
+<form th:action="@{/article/save}" th:object="${article}" method="post">
+    <input type="hidden" name="username" th:value="${username}"/>
+    <input type="hidden" name="authorid" th:value="${userid}"/>
+    <input type="hidden" th:field="*{id}" value="*{id}" name="id"/>
+    <div>
+        <label for="title">标题:</label>
+        <input type="text" id="title" th:field="*{title}" placeholder="输入标题"/>
+    </div>
+    <div>
+        <label for="category">分类:</label>
+        <input type="text" id="category" name="category" placeholder="输入分类，示例：“动物-猫类”"/>
+    </div>
+    <div>
+        <label for="key">关键字:</label>
+        <input type="text" id="key" name="key" placeholder="输入关键字，示例：“动物，猫类”"/>
+    </div>
+    <div>
+        <label for="visibility">是否公开:</label>
+        <select id="visibility" name="share">
+            <option value="public">公开</option>
+            <option value="private">不公开</option>
+        </select>
+    </div>
+    <div>
+        <label for="content">内容:</label>
+        <textarea id="content" th:field="*{content}" placeholder="输入内容"></textarea>
+    </div>
+    <div>
+        <button type="submit">保存</button>
+    </div>
+    <div>
+        <p><span th:text="${editmsg}"></span></p>
+    </div>
+</form>
+
+<form id="deleteForm" th:action="@{/article/delete}" method="post">
+    <input type="hidden" name="username" th:value="${username}"/>
+    <input type="hidden" name="userid" th:value="${userid}"/>
+    <input type="hidden" name="articleId" th:value="${article.id != null ? article.id : -1}"/>
+    <button type="submit">删除文章</button>
+</form>
+
+<form id="homeForm" action="/article/home" method="post">
+    <input type="hidden" name="userid" th:value="${userid}"/>
+    <input type="hidden" name="username" th:value="${username}"/>
+    <button type="submit">返回主页</button>
+</form>
+
+</body>
+</html>

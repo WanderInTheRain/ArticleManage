@@ -1,0 +1,62 @@
+/* Reset default margin and padding */
+body, h1, p, form, div, span, button {
+    margin: 0;
+    padding: 0;
+}
+
+/* Center the content and set basic styles */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+}
+
+/* Style the header */
+h1 {
+    margin-bottom: 20px;
+}
+
+/* Style the welcome message */
+p {
+    margin-bottom: 30px;
+}
+
+/* Style the form container */
+form {
+    margin-bottom: 20px;
+}
+
+/* Style the article list and items */
+.article-list {
+    margin-bottom: 20px;
+}
+
+.article-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Style the article title */
+.article-item span {
+    display: inline-block;
+    margin-right: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Style the buttons */
+button {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Add hover effect to buttons */
+button:hover {
+    background-color: #45a049;
+}
